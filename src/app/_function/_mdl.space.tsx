@@ -122,6 +122,17 @@ function SpacesModelInner() {
 }
 
 export function SpacesModel() {
+  // Preload on mount (client-side only)
+  useEffect(() => {
+    const preloadPath = getAssetUrl("/assets/spaces/scene.gltf");
+    console.log("[Spaces Model] Preloading from:", preloadPath);
+    try {
+      useGLTF.preload(preloadPath);
+    } catch (err) {
+      console.error("[Spaces Model] Error preloading:", err);
+    }
+  }, []);
+
   return (
     <ErrorBoundary fallback={<ModelErrorFallback />}>
       <Suspense fallback={<LoadingSpinner />}>
@@ -129,15 +140,4 @@ export function SpacesModel() {
       </Suspense>
     </ErrorBoundary>
   );
-}
-
-// Preload
-if (typeof window !== "undefined") {
-  try {
-    const preloadPath = getAssetUrl("/assets/spaces/scene.gltf");
-    console.log("[Spaces Model] Preloading from:", preloadPath);
-    useGLTF.preload(preloadPath);
-  } catch (err) {
-    console.error("[Spaces Model] Error preloading:", err);
-  }
 }

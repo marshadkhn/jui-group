@@ -49,6 +49,17 @@ function CopterModelInner() {
 }
 
 export function CopterModel() {
+  // Preload on mount (client-side only)
+  useEffect(() => {
+    const preloadPath = getAssetUrl("/assets/copter/scene.gltf");
+    console.log("[Copter Model] Preloading from:", preloadPath);
+    try {
+      useGLTF.preload(preloadPath);
+    } catch (err) {
+      console.error("[Copter Model] Error preloading:", err);
+    }
+  }, []);
+
   return (
     <ErrorBoundary
       fallback={null}
@@ -57,15 +68,4 @@ export function CopterModel() {
       <CopterModelInner />
     </ErrorBoundary>
   );
-}
-
-// Preload
-if (typeof window !== "undefined") {
-  try {
-    const preloadPath = getAssetUrl("/assets/copter/scene.gltf");
-    console.log("[Copter Model] Preloading from:", preloadPath);
-    useGLTF.preload(preloadPath);
-  } catch (err) {
-    console.error("[Copter Model] Error preloading:", err);
-  }
 }

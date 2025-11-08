@@ -37,6 +37,17 @@ function StationModelInner() {
 }
 
 export function StationModel() {
+  // Preload on mount (client-side only)
+  useEffect(() => {
+    const preloadPath = getAssetUrl("/assets/station/scene.gltf");
+    console.log("[Station Model] Preloading from:", preloadPath);
+    try {
+      useGLTF.preload(preloadPath);
+    } catch (err) {
+      console.error("[Station Model] Error preloading:", err);
+    }
+  }, []);
+
   return (
     <ErrorBoundary
       fallback={null}
@@ -45,15 +56,4 @@ export function StationModel() {
       <StationModelInner />
     </ErrorBoundary>
   );
-}
-
-// Preload
-if (typeof window !== "undefined") {
-  try {
-    const preloadPath = getAssetUrl("/assets/station/scene.gltf");
-    console.log("[Station Model] Preloading from:", preloadPath);
-    useGLTF.preload(preloadPath);
-  } catch (err) {
-    console.error("[Station Model] Error preloading:", err);
-  }
 }

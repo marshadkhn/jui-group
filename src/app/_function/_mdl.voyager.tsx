@@ -42,6 +42,17 @@ function VoyagerModelInner() {
 }
 
 export function VoyagerModel() {
+  // Preload on mount (client-side only)
+  useEffect(() => {
+    const preloadPath = getAssetUrl("/assets/voyager/scene.gltf");
+    console.log("[Voyager Model] Preloading from:", preloadPath);
+    try {
+      useGLTF.preload(preloadPath);
+    } catch (err) {
+      console.error("[Voyager Model] Error preloading:", err);
+    }
+  }, []);
+
   return (
     <ErrorBoundary
       fallback={null}
@@ -50,15 +61,4 @@ export function VoyagerModel() {
       <VoyagerModelInner />
     </ErrorBoundary>
   );
-}
-
-// Preload
-if (typeof window !== "undefined") {
-  try {
-    const preloadPath = getAssetUrl("/assets/voyager/scene.gltf");
-    console.log("[Voyager Model] Preloading from:", preloadPath);
-    useGLTF.preload(preloadPath);
-  } catch (err) {
-    console.error("[Voyager Model] Error preloading:", err);
-  }
 }

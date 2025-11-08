@@ -46,6 +46,17 @@ function EarthModelInner() {
 }
 
 export function EarthModel() {
+  // Preload on mount (client-side only)
+  useEffect(() => {
+    const preloadPath = getAssetUrl("/assets/earth/earth.gltf");
+    console.log("[Earth Model] Preloading from:", preloadPath);
+    try {
+      useGLTF.preload(preloadPath);
+    } catch (err) {
+      console.error("[Earth Model] Error preloading:", err);
+    }
+  }, []);
+
   return (
     <ErrorBoundary
       fallback={null}
@@ -56,15 +67,4 @@ export function EarthModel() {
       <EarthModelInner />
     </ErrorBoundary>
   );
-}
-
-// Preload the model with error handling
-if (typeof window !== "undefined") {
-  try {
-    const preloadPath = getAssetUrl("/assets/earth/earth.gltf");
-    console.log("[Earth Model] Preloading from:", preloadPath);
-    useGLTF.preload(preloadPath);
-  } catch (err) {
-    console.error("[Earth Model] Error preloading:", err);
-  }
 }
