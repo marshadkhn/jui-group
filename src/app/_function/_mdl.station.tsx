@@ -4,7 +4,9 @@ import { ErrorBoundary } from "react-error-boundary";
 
 function StationModelInner() {
   const group = useRef<any>(null);
-  const { scene, animations, error } = useGLTF("/assets/station/scene.gltf") as any;
+  const { scene, animations, error } = useGLTF(
+    "/assets/station/scene.gltf"
+  ) as any;
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
@@ -29,11 +31,7 @@ function StationModelInner() {
 
   return (
     <group ref={group}>
-      <primitive
-        object={scene}
-        scale={0.4}
-        position={[-10, 0, -320]}
-      />
+      <primitive object={scene} scale={0.4} position={[-10, 0, -320]} />
     </group>
   );
 }

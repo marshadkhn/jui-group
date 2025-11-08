@@ -5,7 +5,9 @@ import { ErrorBoundary } from "react-error-boundary";
 
 function CopterModelInner() {
   const group = useRef<any>(null);
-  const { scene, animations, error } = useGLTF("/assets/copter/scene.gltf") as any;
+  const { scene, animations, error } = useGLTF(
+    "/assets/copter/scene.gltf"
+  ) as any;
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
