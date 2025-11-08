@@ -94,6 +94,7 @@ export function CameraController() {
             window.removeEventListener('scroll', handleScroll)
             window.removeEventListener('resize', updatePageHeight)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useFrame(({ camera }) => {

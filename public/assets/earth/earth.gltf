@@ -945,21 +945,21 @@
   "buffers": [
     {
       "byteLength": 32595696,
-      "uri": "https://space.retas.org/assets/earth/scene.bin"
+      "uri": "scene.bin"
     }
   ],
   "images": [
     {
-      "uri": "https://space.retas.org/assets/earth/textures/TERRE_baseColor.jpeg"
+      "uri": "textures/TERRE_baseColor.jpeg"
     },
     {
-      "uri": "https://space.retas.org/assets/earth/textures/TERRE_metallicRoughness.png"
+      "uri": "textures/TERRE_metallicRoughness.png"
     },
     {
-      "uri": "https://space.retas.org/assets/earth/textures/TERRE_emissive.jpeg"
+      "uri": "textures/TERRE_emissive.jpeg"
     },
     {
-      "uri": "https://space.retas.org/assets/earth/textures/NUAGES_baseColor.png"
+      "uri": "textures/NUAGES_baseColor.png"
     }
   ],
   "materials": [

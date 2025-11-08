@@ -13,7 +13,7 @@ const fanta = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Aerosteon",
+  title: "JUI GROUPS",
   description: "Aerosteon is a hyperspace travel agency that offers faster-than-light travel to the stars.",
 };
 
