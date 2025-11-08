@@ -1,13 +1,6 @@
 "use client";
-import { Canvas } from "@react-three/fiber";
-import { Environment, Html, useProgress } from "@react-three/drei";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import { Suspense, useEffect, useRef } from "react";
-import { SpacesModel } from "./_function/_mdl.space";
-import { StationModel } from "./_function/_mdl.station";
-import { CameraController } from "./_function/_ctr.camera";
-import { EarthModel } from "./_function/_mdl.earth";
-import { VoyagerModel } from "./_function/_mdl.voyager";
+import { Html, useProgress } from "@react-three/drei";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { CE_Headers } from "./_element/client.header";
 import { CE_Navbar } from "./_element/client.navbar";
 import { CE_Mission } from "./_element/client.mission";
@@ -16,6 +9,68 @@ import { CE_TrustBar } from "./_element/client.trustbar";
 import { CE_Numbers } from "./_element/client.numbers";
 import { CE_Features } from "./_element/client.features";
 import { CE_Contact } from "./_element/client.contact";
+import dynamic from "next/dynamic";
+
+// Dynamically import Canvas and 3D components with no SSR
+const Canvas = dynamic(
+  () => import("@react-three/fiber").then((mod) => mod.Canvas),
+  { ssr: false }
+);
+
+const Environment = dynamic(
+  () => import("@react-three/drei").then((mod) => mod.Environment),
+  { ssr: false }
+);
+
+const EffectComposer = dynamic(
+  () => import("@react-three/postprocessing").then((mod) => mod.EffectComposer),
+  { ssr: false }
+);
+
+const Bloom = dynamic(
+  () => import("@react-three/postprocessing").then((mod) => mod.Bloom),
+  { ssr: false }
+);
+
+const SpacesModel = dynamic(
+  () =>
+    import("./_function/_mdl.space").then((mod) => ({
+      default: mod.SpacesModel,
+    })),
+  { ssr: false }
+);
+
+const StationModel = dynamic(
+  () =>
+    import("./_function/_mdl.station").then((mod) => ({
+      default: mod.StationModel,
+    })),
+  { ssr: false }
+);
+
+const CameraController = dynamic(
+  () =>
+    import("./_function/_ctr.camera").then((mod) => ({
+      default: mod.CameraController,
+    })),
+  { ssr: false }
+);
+
+const EarthModel = dynamic(
+  () =>
+    import("./_function/_mdl.earth").then((mod) => ({
+      default: mod.EarthModel,
+    })),
+  { ssr: false }
+);
+
+const VoyagerModel = dynamic(
+  () =>
+    import("./_function/_mdl.voyager").then((mod) => ({
+      default: mod.VoyagerModel,
+    })),
+  { ssr: false }
+);
 
 function Loader() {
   const { progress } = useProgress();
@@ -58,6 +113,28 @@ function Loader() {
 
 export default function Home() {
   const stationRef = useRef<any>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          backgroundColor: "#050505",
+          color: "darkcyan",
+        }}
+      >
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <main
