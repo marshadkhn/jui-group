@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import { useGLTF } from "@react-three/drei";
 import { useRef } from "react";
 
 export function EarthModel() {
   const group = useRef<any>(null);
   const { scene } = useGLTF("/assets/earth/earth.gltf", true);
-  
+
   // Clone the scene to avoid issues with reusing the same object
   const clonedScene = scene.clone();
 
