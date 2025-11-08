@@ -1,5 +1,4 @@
 "use client";
-import { Html, useProgress } from "@react-three/drei";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { CE_Headers } from "./_element/client.header";
 import { CE_Navbar } from "./_element/client.navbar";
@@ -72,9 +71,8 @@ const VoyagerModel = dynamic(
   { ssr: false }
 );
 
+// Simple loader without useProgress to avoid SSR issues
 function Loader() {
-  const { progress } = useProgress();
-
   // Disable scrolling when loader is mounted
   useEffect(() => {
     const originalStyle = document.body.style.overflow;
@@ -85,7 +83,15 @@ function Loader() {
   }, []);
 
   return (
-    <Html center>
+    <div
+      style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        textAlign: "center",
+      }}
+    >
       <div
         style={{
           width: "256px",
@@ -96,18 +102,16 @@ function Loader() {
       >
         <div
           style={{
-            width: `${progress}%`,
+            width: "50%",
             backgroundColor: "darkcyan",
             height: "12px",
             borderRadius: "9999px",
-            transition: "width 0.3s",
+            animation: "pulse 1.5s ease-in-out infinite",
           }}
         />
       </div>
-      <p style={{ color: "darkcyan", marginTop: "8px" }}>
-        {progress.toFixed(2)}% loaded
-      </p>
-    </Html>
+      <p style={{ color: "darkcyan", marginTop: "8px" }}>Loading 3D Scene...</p>
+    </div>
   );
 }
 
