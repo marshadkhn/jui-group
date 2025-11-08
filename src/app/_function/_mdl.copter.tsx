@@ -2,21 +2,21 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { getAssetUrl, logGLTFLoadError } from "./_util.assets";
 
 function CopterModelInner() {
   const group = useRef<any>(null);
-  const { scene, animations, error } = useGLTF(
-    "/assets/copter/scene.gltf"
-  ) as any;
+  const modelPath = getAssetUrl("/assets/copter/scene.gltf");
+  const { scene, animations, error } = useGLTF(modelPath) as any;
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
     if (error) {
-      console.error("Error loading Copter model:", error);
+      logGLTFLoadError("Copter", modelPath, error);
     } else if (scene) {
-      console.log("Copter model loaded successfully");
+      console.log("[Copter Model] Loaded successfully from:", modelPath);
     }
-  }, [scene, error]);
+  }, [scene, error, modelPath]);
 
   useEffect(() => {
     if (actions) {
@@ -60,8 +60,12 @@ export function CopterModel() {
 }
 
 // Preload
-try {
-  useGLTF.preload("/assets/copter/scene.gltf");
-} catch (err) {
-  console.error("Error preloading Copter model:", err);
+if (typeof window !== "undefined") {
+  try {
+    const preloadPath = getAssetUrl("/assets/copter/scene.gltf");
+    console.log("[Copter Model] Preloading from:", preloadPath);
+    useGLTF.preload(preloadPath);
+  } catch (err) {
+    console.error("[Copter Model] Error preloading:", err);
+  }
 }

@@ -1,21 +1,21 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useEffect, useRef } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { getAssetUrl, logGLTFLoadError } from "./_util.assets";
 
 function StationModelInner() {
   const group = useRef<any>(null);
-  const { scene, animations, error } = useGLTF(
-    "/assets/station/scene.gltf"
-  ) as any;
+  const modelPath = getAssetUrl("/assets/station/scene.gltf");
+  const { scene, animations, error } = useGLTF(modelPath) as any;
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
     if (error) {
-      console.error("Error loading Station model:", error);
+      logGLTFLoadError("Station", modelPath, error);
     } else if (scene) {
-      console.log("Station model loaded successfully");
+      console.log("[Station Model] Loaded successfully from:", modelPath);
     }
-  }, [scene, error]);
+  }, [scene, error, modelPath]);
 
   useEffect(() => {
     if (actions) {
@@ -48,8 +48,12 @@ export function StationModel() {
 }
 
 // Preload
-try {
-  useGLTF.preload("/assets/station/scene.gltf");
-} catch (err) {
-  console.error("Error preloading Station model:", err);
+if (typeof window !== "undefined") {
+  try {
+    const preloadPath = getAssetUrl("/assets/station/scene.gltf");
+    console.log("[Station Model] Preloading from:", preloadPath);
+    useGLTF.preload(preloadPath);
+  } catch (err) {
+    console.error("[Station Model] Error preloading:", err);
+  }
 }

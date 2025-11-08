@@ -2,20 +2,22 @@ import { useGLTF } from "@react-three/drei";
 import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { ErrorBoundary } from "react-error-boundary";
+import { getAssetUrl, logGLTFLoadError } from "./_util.assets";
 
 function VoyagerModelInner() {
-  const { scene, error } = useGLTF("/assets/voyager/scene.gltf") as any;
+  const modelPath = getAssetUrl("/assets/voyager/scene.gltf");
+  const { scene, error } = useGLTF(modelPath) as any;
   const ref = useRef<any>(null);
   let time = 0;
   const baseY = -35.05;
 
   useEffect(() => {
     if (error) {
-      console.error("Error loading Voyager model:", error);
+      logGLTFLoadError("Voyager", modelPath, error);
     } else if (scene) {
-      console.log("Voyager model loaded successfully");
+      console.log("[Voyager Model] Loaded successfully from:", modelPath);
     }
-  }, [scene, error]);
+  }, [scene, error, modelPath]);
 
   useFrame((_, delta) => {
     if (!ref.current) return;
@@ -51,8 +53,12 @@ export function VoyagerModel() {
 }
 
 // Preload
-try {
-  useGLTF.preload("/assets/voyager/scene.gltf");
-} catch (err) {
-  console.error("Error preloading Voyager model:", err);
+if (typeof window !== "undefined") {
+  try {
+    const preloadPath = getAssetUrl("/assets/voyager/scene.gltf");
+    console.log("[Voyager Model] Preloading from:", preloadPath);
+    useGLTF.preload(preloadPath);
+  } catch (err) {
+    console.error("[Voyager Model] Error preloading:", err);
+  }
 }

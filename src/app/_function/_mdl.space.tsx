@@ -5,9 +5,11 @@ import { useFrame } from "@react-three/fiber";
 import { ErrorBoundary } from "react-error-boundary";
 import * as THREE from "three";
 import { LoadingSpinner, ModelErrorFallback } from "./_other.misc";
+import { getAssetUrl, logGLTFLoadError } from "./_util.assets";
 
 function SpacesModelInner() {
-  const { scene, error } = useGLTF("/assets/spaces/scene.gltf") as any;
+  const modelPath = getAssetUrl("/assets/spaces/scene.gltf");
+  const { scene, error } = useGLTF(modelPath) as any;
   const modelLoaded = useRef(false);
   const modelRef = useRef<any>(null);
 
@@ -19,12 +21,12 @@ function SpacesModelInner() {
 
   useEffect(() => {
     if (error) {
-      console.error("Error loading Spaces model:", error);
+      logGLTFLoadError("Spaces", modelPath, error);
     } else if (scene) {
-      console.log("Spaces model loaded successfully");
+      console.log("[Spaces Model] Loaded successfully from:", modelPath);
       modelLoaded.current = true;
     }
-  }, [scene, error]);
+  }, [scene, error, modelPath]);
 
   useEffect(() => {
     if (!scene) return;
@@ -130,8 +132,12 @@ export function SpacesModel() {
 }
 
 // Preload
-try {
-  useGLTF.preload("/assets/spaces/scene.gltf");
-} catch (err) {
-  console.error("Error preloading Spaces model:", err);
+if (typeof window !== "undefined") {
+  try {
+    const preloadPath = getAssetUrl("/assets/spaces/scene.gltf");
+    console.log("[Spaces Model] Preloading from:", preloadPath);
+    useGLTF.preload(preloadPath);
+  } catch (err) {
+    console.error("[Spaces Model] Error preloading:", err);
+  }
 }
