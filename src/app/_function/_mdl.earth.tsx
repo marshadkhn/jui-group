@@ -1,31 +1,26 @@
 "use client"
-import { useAnimations, useGLTF } from "@react-three/drei";
-import { useEffect, useRef } from "react";
+import { useGLTF } from "@react-three/drei";
+import { useRef } from "react";
 
 export function EarthModel() {
   const group = useRef<any>(null);
-  const { scene, animations } = useGLTF("/assets/earth/earth.gltf");
-  const { actions } = useAnimations(animations, group);
-
-  useEffect(() => {
-    if (actions) {
-      setTimeout(() => {
-        Object.values(actions).forEach((action) => {
-          action?.play();
-        });
-      }, 0);
-    }
-  }, [actions]);
+  const { scene } = useGLTF("/assets/earth/earth.gltf", true);
+  
+  // Clone the scene to avoid issues with reusing the same object
+  const clonedScene = scene.clone();
 
   return (
-      <group ref={group}>
-        <primitive
-          object={scene}
-          scale={10}
-          position={[-13, 0, -300]}
-          castShadow
-          receiveShadow
-        />
-      </group>
+    <group ref={group}>
+      <primitive
+        object={clonedScene}
+        scale={10}
+        position={[-13, 0, -300]}
+        castShadow
+        receiveShadow
+      />
+    </group>
   );
 }
+
+// Preload the model
+useGLTF.preload("/assets/earth/earth.gltf");
