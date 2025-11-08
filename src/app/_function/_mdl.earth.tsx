@@ -1,10 +1,32 @@
 "use client";
 import { useGLTF } from "@react-three/drei";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
-export function EarthModel() {
+function EarthModelInner() {
   const group = useRef<any>(null);
-  const { scene } = useGLTF("/assets/earth/earth.gltf", true);
+
+  // Use absolute path from public folder
+  const modelPath = "/assets/earth/earth.gltf";
+
+  // Load the GLTF model with error handling
+  const { scene, error } = useGLTF(modelPath, true) as any;
+
+  useEffect(() => {
+    if (error) {
+      console.error("Error loading Earth model:", error);
+    } else if (scene) {
+      console.log("Earth model loaded successfully");
+    }
+  }, [scene, error]);
+
+  // If there's an error or no scene, return null
+  if (error || !scene) {
+    if (error) {
+      console.error("Earth model failed to load:", error);
+    }
+    return null;
+  }
 
   // Clone the scene to avoid issues with reusing the same object
   const clonedScene = scene.clone();
@@ -22,5 +44,22 @@ export function EarthModel() {
   );
 }
 
-// Preload the model
-useGLTF.preload("/assets/earth/earth.gltf");
+export function EarthModel() {
+  return (
+    <ErrorBoundary
+      fallback={null}
+      onError={(error, errorInfo) => {
+        console.error("Earth model error boundary caught:", error, errorInfo);
+      }}
+    >
+      <EarthModelInner />
+    </ErrorBoundary>
+  );
+}
+
+// Preload the model with error handling
+try {
+  useGLTF.preload("/assets/earth/earth.gltf");
+} catch (err) {
+  console.error("Error preloading Earth model:", err);
+}

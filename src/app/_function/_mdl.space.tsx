@@ -6,8 +6,8 @@ import { ErrorBoundary } from 'react-error-boundary'
 import * as THREE from 'three'
 import { LoadingSpinner, ModelErrorFallback } from './_other.misc'
 
-export function SpacesModel() {
-    const { scene } = useGLTF('/assets/spaces/scene.gltf')
+function SpacesModelInner() {
+    const { scene, error } = useGLTF('/assets/spaces/scene.gltf') as any
     const modelLoaded = useRef(false)
     const modelRef = useRef<any>(null)
 
@@ -18,12 +18,17 @@ export function SpacesModel() {
     })
 
     useEffect(() => {
-        if (scene) {
-            modelLoaded.current = true
+        if (error) {
+            console.error("Error loading Spaces model:", error);
+        } else if (scene) {
+            console.log("Spaces model loaded successfully");
+            modelLoaded.current = true;
         }
-    }, [scene])
+    }, [scene, error])
 
     useEffect(() => {
+        if (!scene) return;
+
         const canvas = document.createElement('canvas')
         canvas.width = 32
         canvas.height = 32
@@ -95,16 +100,33 @@ export function SpacesModel() {
         })
     }, [scene])
 
+    if (error || !scene) {
+        return null;
+    }
+
+    return (
+        <primitive
+            ref={modelRef}
+            object={scene}
+            position={[-10, -150, 60]}
+            rotation={[-0.1, Math.PI / 2.4, 0]}
+            scale={100} />
+    )
+}
+
+export function SpacesModel() {
     return (
         <ErrorBoundary fallback={<ModelErrorFallback />}>
             <Suspense fallback={<LoadingSpinner />}>
-                <primitive
-                    ref={modelRef}
-                    object={scene}
-                    position={[-10, -150, 60]}
-                    rotation={[-0.1, Math.PI / 2.4, 0]}
-                    scale={100} />
+                <SpacesModelInner />
             </Suspense>
         </ErrorBoundary>
     )
+}
+
+// Preload
+try {
+    useGLTF.preload('/assets/spaces/scene.gltf');
+} catch (err) {
+    console.error("Error preloading Spaces model:", err);
 }
